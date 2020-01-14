@@ -1,0 +1,46 @@
+payable contract Wheel =   
+    type i = int
+    type s = string
+    type a = address
+
+    record player = {
+        id : i,
+        owner : a,
+        name	  : s,
+        amountWon	  : i }
+   
+    record state = 
+        { players : map(i, player),
+        totalPlayers : i}
+ 
+    entrypoint init() = {
+        players = {},
+        totalPlayers = 0 }
+
+    entrypoint getPlayer(index : i) : player = 
+        switch(Map.lookup(index, state.players))
+            None  => abort("There is no Player with that ID.")
+            Some(x) => x  
+
+    stateful entrypoint addPlayer(name' : s) = 
+       
+        let index = getTotalPlayers() + 1
+        let player = {id= index,  owner  = Call.caller, name = name', amountWon = 0}
+        put(state {players[index] = player, totalPlayers = index})
+
+    entrypoint getTotalPlayers() : i = 
+        state.totalPlayers
+
+    entrypoint getContractBalance() = 
+
+        Contract.balance
+
+    stateful payable entrypoint pay(amount : i) =
+        Chain.spend(Contract.address,amount)
+        
+    payable stateful entrypoint play(index : i, prize : i) =
+        let detail = getPlayer(index)
+        Chain.spend(detail.owner, prize)
+        let updatedPrize = detail.amountWon + prize
+        let updatedDetails = state.players{ [index].amountWon = updatedPrize }
+        put(state{ players = updatedDetails })
