@@ -8,11 +8,11 @@
     -webkit-animation: loader 1s ease-in-out infinite alternate;
     animation: loader 1s ease-in-out infinite alternate;
  }
-
+/* 
  #loadingText{
     position: absolute;
  }
- 
+  */
  .loader:before {
    content: " ";
    position: absolute;
