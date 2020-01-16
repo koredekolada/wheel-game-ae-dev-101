@@ -10,7 +10,7 @@
  }
 
  #loadingText{
-    position: fixed;
+    position: absolute;
  }
  
  .loader:before {
