@@ -51,7 +51,7 @@ payable contract Wheel =
 
     `;
 
-const contractAddress = "ct_2bKBt8XZnQpBmsjKMEbCCrnfoVj4nyDHfM4CbhdQSkeR4tzJ3D";
+const contractAddress = "ct_2mZhEk2XEKvqyAYT1iFN25BjMbmmwAqkPKz3uhwfXBgRwuoPRy";
 var GamersArray = [];
 var client = null;
 var GameLength = 0;
@@ -155,6 +155,7 @@ var prizeText;
 
 window.onload = async function() {
   $(".loader").show();
+  console.log("Getting data from the blockchain")
 
   client = await Ae.Aepp();
 
@@ -179,7 +180,7 @@ window.onload = async function() {
   $(".loader").hide();
 
   // await $(".fourth").click(async function(e) {
-  //   console.log(" Register Button was Clicked");
+  //   console.log(" Register Button was Clicked");s
   //   const name = $("#user").val();
   //   console.log(name);
   //   await contractCall("addPlayer", [name], 0);
