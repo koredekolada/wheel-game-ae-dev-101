@@ -1,0 +1,3 @@
+# wheel-game-ae-dev-101
+
+In this challenge I built game dapp where users spin the wheel for crypto. if they loose by getting an empty slot they have to pay the contract balance a fee, if they win the contract funds then with ae. basically how it works after login user spin and after spinning have to wait for the confirmation baseapp wallet to popup then confirm if their spin enters a reward point they get rewarded in ae if they spin to the empty spot they pay some little ae for the loss. I developed something different and decided to implememt the smart contract on a game aepp. Thanks feedback is welcomed
