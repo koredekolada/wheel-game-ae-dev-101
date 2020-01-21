@@ -157,7 +157,7 @@ window.onload = async function() {
   $(".loader1").show();
   console.log("Getting data from the blockchain")
 
-  client = await Ae.Aepp();
+  client =  Ae.Aepp();
 
   GamerLength = await callStatic("getTotalPlayers", []);
 
@@ -203,7 +203,7 @@ window.onload = async function() {
     $("#login").hide();
     // $("#body").show();
     game = new Phaser.Game(458, 488, Phaser.AUTO, "");
-    // adding "PlayGame" state
+     adding "PlayGame" state
     game.state.add("PlayGame", playGame);
     // launching "PlayGame" state
     game.state.start("PlayGame");
@@ -215,7 +215,7 @@ window.onload = async function() {
   // creation of a 458x488 game
 };
 
-var playGame = function(game) {};
+var playGame = (game) {};
 
 playGame.prototype = {
   // function to be executed once the state preloads
