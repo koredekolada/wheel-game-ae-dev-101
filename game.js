@@ -51,7 +51,7 @@ payable contract Wheel =
 
     `;
 
-const contractAddress = "ct_2bKBt8XZnQpBmsjKMEbCCrnfoVj4nyDHfM4CbhdQSkeR4tzJ3D";
+const contractAddress = "ct_2mZhEk2XEKvqyAYT1iFN25BjMbmmwAqkPKz3uhwfXBgRwuoPRy";
 var GamersArray = [];
 var client = null;
 var GameLength = 0;
@@ -154,7 +154,8 @@ var prizeText;
 // PLAYGAME STATE
 
 window.onload = async function() {
-  $(".loader").show();
+  $(".loader1").show();
+  console.log("Getting data from the blockchain")
 
   client = await Ae.Aepp();
 
@@ -176,10 +177,10 @@ window.onload = async function() {
     //   $("#loading-bar-spinner").hide();
   }
   console.log("Finished!!");
-  $(".loader").hide();
+  $(".loader1").hide();
 
   // await $(".fourth").click(async function(e) {
-  //   console.log(" Register Button was Clicked");
+  //   console.log(" Register Button was Clicked");s
   //   const name = $("#user").val();
   //   console.log(name);
   //   await contractCall("addPlayer", [name], 0);
@@ -193,7 +194,7 @@ window.onload = async function() {
   // $("#gameSection").hide()
 
   $(".fourth").click(async function(e) {
-    $(".loader").show();
+    $(".loader1").show();
     console.log(" Register Button was Clicked");
     const name = $("#user").val();
     console.log(name);
@@ -209,7 +210,7 @@ window.onload = async function() {
 
     // $("#login").hide()
 
-    $(".loader").hide();
+    $(".loader1").hide();
   });
   // creation of a 458x488 game
 };
@@ -285,17 +286,17 @@ playGame.prototype = {
     console.log(prize);
 
     if (prize > 0) {
-      $(".loader").show();
+      $(".loader1").show();
       console.log("You just won ", prize, " aettos");
       await contractCall("payPlayer", [prize * 100000], prize * 100000);
       console.log("Paid Succefully");
-      $(".loader").hide();
+      $(".loader1").hide();
     } else {
-      $(".loader").show();
+      $(".loader1").show();
       await contractCall("pay", [100000], 100000);
       console.log("debitted looser");
       console.log("Try again");
-      $(".loader").hide();
+      $(".loader1").hide();
     }
   }
 };
