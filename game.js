@@ -38,9 +38,11 @@ payable contract Wheel =
 
     stateful payable entrypoint pay(amount : i) =
         Chain.spend(Contract.address,amount)
-
-    stateful payable entrypoint payPlayer(amount : i) =
+        
+    stateful payable entrypoint cashOut(amount : i) =
         Chain.spend(Call.caller,amount)
+        
+        
         
     payable stateful entrypoint play(index : i, prize : i) =
         let detail = getPlayer(index)
@@ -51,10 +53,13 @@ payable contract Wheel =
 
     `;
 
-const contractAddress = "ct_2mZhEk2XEKvqyAYT1iFN25BjMbmmwAqkPKz3uhwfXBgRwuoPRy";
+const contractAddress = "ct_2njiM6b5YX2RLPpGm6dPcPJSkiwFBwGogT2uMiDYhxb1i8cCEf";
 var GamersArray = [];
 var client = null;
 var GameLength = 0;
+
+// 
+var totalAmount  = 0;
 
 function renderGamers() {
   GamersArray = GamersArray.sort(function(a, b) {
@@ -103,6 +108,8 @@ async function contractCall(func, args, value) {
 
 // the game itself
 var game;
+
+
 // the spinning wheel
 var wheel;
 // can the wheel spin?
@@ -125,35 +132,12 @@ var prize;
 // text field where to show the prize
 var prizeText;
 
-// window.addEventListener("load", async () => {
 
-//   $("#body").hide();
-//   $("#login").show();
-
-//   client = await Ae.Aepp();
-
-//   GamerLength = await callStatic("getTotalPlayers", []);
-
-//   for (let i = 1; i <= GamerLength; i++) {
-//     const persons = await callStatic("getPlayer", [i]);
-
-//     console.log("calling contract");
-
-//     GamersArray.push({
-//       id: persons.id,
-//       name: persons.name,
-//       owner: persons.owner,
-//       amountWon: persons.amountWon
-//     });
-
-//     //   renderProduct();
-//     //   $("#loading-bar-spinner").hide();
-//   }
-//   console.log("Finished!!");
 
 // PLAYGAME STATE
 
 window.onload = async function() {
+  $("#checkOut").hide();
   $(".loader1").show();
   console.log("Getting data from the blockchain")
 
@@ -203,7 +187,7 @@ window.onload = async function() {
     $("#login").hide();
     // $("#body").show();
     game = new Phaser.Game(458, 488, Phaser.AUTO, "");
-      //adding "PlayGame" state
+    // adding "PlayGame" state
     game.state.add("PlayGame", playGame);
     // launching "PlayGame" state
     game.state.start("PlayGame");
@@ -212,10 +196,12 @@ window.onload = async function() {
 
     $(".loader1").hide();
   });
+
+  
   // creation of a 458x488 game
 };
 
-var playGame = function (game) {};
+var playGame = function(game) {};
 
 playGame.prototype = {
   // function to be executed once the state preloads
@@ -226,6 +212,7 @@ playGame.prototype = {
   },
   // funtion to be executed when the state is created
   create: function() {
+    $("#checkOut").show();
     // giving some color to background
     game.stage.backgroundColor = "#880044";
     // adding the wheel in the middle of the canvas
@@ -282,22 +269,49 @@ playGame.prototype = {
     // now we can spin the wheel again
     canSpin = true;
     // writing the prize you just won
-    prizeText.text = slicePrizes[prize];
-    console.log(prize);
 
-    if (prize > 0) {
-      $(".loader1").show();
-      console.log("You just won ", prize, " aettos");
-      await contractCall("payPlayer", [prize * 100000], prize * 100000);
-      console.log("Paid Succefully");
-      $(".loader1").hide();
-    } else {
-      $(".loader1").show();
-      await contractCall("pay", [100000], 100000);
-      console.log("debitted looser");
-      console.log("Try again");
-      $(".loader1").hide();
-    }
+    console.log(slicePrizes[prize])
+    prizeText.text = slicePrizes[prize];
+    // console.log(prize);
+
+if(slicePrizes[prize] ==  "BAD LUCK!!!" ){
+  totalAmount = totalAmount - 1
+  // totalAmount + prize
+}else if(slicePrizes[prize] ==  "1 aettos"){
+  totalAmount =  totalAmount + 1
+}
+else if(slicePrizes[prize] ==  "2 STARS"){
+  totalAmount = totalAmount + 2
+}
+else if(slicePrizes[prize] ==  "3 STARS"){
+  totalAmount = totalAmount + 3
+}
+else if(slicePrizes[prize] == "5 STARS"){
+  totalAmount = totalAmount + 5
+}
+else{
+  totalAmount = totalAmount + 1
+}
+    
+
+
+console.log(
+  "Current score : ", totalAmount
+)
+
+    // if (prize > 0) {
+    //   $(".loader1").show();
+    //   console.log("You just won ", prize, " aettos");
+    //   await contractCall("payPlayer", [prize * 100000], prize * 100000);
+    //   console.log("Paid Succefully");
+    //   $(".loader1").hide();
+    // } else {
+    //   $(".loader1").show();
+    //   await contractCall("pay", [100000], 100000);
+    //   console.log("debitted looser");
+    //   console.log("Try again");
+    //   $(".loader1").hide();
+    // }
   }
 };
 
@@ -306,3 +320,27 @@ playGame.prototype = {
 //   await
 
 // }
+
+$("#checkOut").click(async function(e) {
+  $(".loader1").show();
+  console.log(" CashOut button was Clicked");
+  console.log( `paying out ${totalAmount * 100000}`)
+  if(totalAmount > 0){
+    console.log("cashing out")
+    await contractCall("cashOut", [totalAmount * 100000], totalAmount* 100000);
+    console.log("cashed out, page will reload")
+    location.reload()
+  }else if (totalAmount < 0){
+    console.log("paying dues")
+    await contractCall('pay', [totalAmount.abs() * 100000], totalAmount.abs()* 100000)
+    console.log("cashed out, page will reload")
+    location.reload()
+  }
+  else{
+    console.log("You have nothing to cash out")
+    location.reload()
+  }
+
+
+  $(".loader1").hide();
+});
